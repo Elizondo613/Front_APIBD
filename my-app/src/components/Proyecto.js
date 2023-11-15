@@ -31,7 +31,9 @@ export default function ProyectoNuevo () {
       nombre: event.target.inputNombre.value,
       fechaInicio: event.target.inputFechaInicio.value,
       fechaFin: event.target.inputFechaFin.value,
-      presupuesto: event.target.inputPresupuesto.value
+      presupuesto: event.target.inputPresupuesto.value,
+      encargado: event.target.inputEncargado.value,
+      familia: event.target.inputFamilia.value
     }
     
     newProyectAPI(tmpProyecto)
@@ -102,6 +104,14 @@ export default function ProyectoNuevo () {
               <Form.Group className="mb-3 col-6" controlId="inputPresupuesto">
                 <Form.Label>Presupuesto</Form.Label>
                 <Form.Control type="number" placeholder="presupuesto..." />
+              </Form.Group>
+              <Form.Group className="mb-3 col-6" controlId="inputEncargado">
+                <Form.Label>Encargado</Form.Label>
+                <Form.Control type="text" placeholder="Encargado..." />
+              </Form.Group>
+              <Form.Group className="mb-3 col-6" controlId="inputFamilia">
+                <Form.Label>Familia</Form.Label>
+                <Form.Control type="text" placeholder="Familia..." />
               </Form.Group>
             </div>
             <div className='row justify-content-center mt-3'>
