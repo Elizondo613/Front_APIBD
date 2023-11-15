@@ -1,10 +1,8 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import Card from 'react-bootstrap/Card';
 
 export default function EncargadoNuevo () {
-  const [encargado, setEncargado] = useState([])
   const [id, setId] = useState('')
 
   const handleInputChange = (event) => {
@@ -44,19 +42,6 @@ export default function EncargadoNuevo () {
       .catch(err => console.log(err))
   }
 
-  //OBTENER ENCARGADO
-  useEffect(() => {
-    const getEncargado = () => {
-        fetch('http://localhost:4000/api/' + id + '/encargado')
-        .then(res => res.json())
-        .then(data=>{
-            setEncargado(data)
-          })
-    }
-    getEncargado()
-
-  },[])
-
   return (
     <>
     <h1>Nuevo encargado</h1>
@@ -89,25 +74,6 @@ export default function EncargadoNuevo () {
             </div>
           </Form>
       }
-      <div className='mb-3'></div>
-      <div>
-        {
-            encargado.map((item, index) => (
-            <Card className='mt-4' key={index} style={{ width: '18rem' }}>
-                <Card.Body>
-                <Card.Text>Nombre:</Card.Text>
-                <Card.Title>{item.nombre}</Card.Title>
-                <Card.Subtitle className="mb-2 text-muted">Dirección:</Card.Subtitle>
-                <Card.Text>{item.direccion}</Card.Text>
-                <Card.Subtitle className="mb-2 text-muted">DPI</Card.Subtitle>
-                <Card.Text>{item.dpi}</Card.Text>
-                <Card.Subtitle className="mb-2 text-muted">Proyecto:</Card.Subtitle>
-                <Card.Text>{item.proyecto}</Card.Text>
-                </Card.Body>
-            </Card>
-            ))
-        }
-      </div>
     </>
   )
 }

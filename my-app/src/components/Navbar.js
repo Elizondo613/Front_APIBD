@@ -8,7 +8,28 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Proyecto from "./Proyecto";
 import Encargado from './Encargado';
 import Familia from './Familia';
+import Actualizar from './Actualizar';
 import Card from 'react-bootstrap/Card';
+
+function ProjectCard({ project }) {
+    return (
+        <>
+        <h2>Búsqueda realizada: </h2>
+      <Card className='mt-4' style={{ width: '18rem' }}>
+        <Card.Body>
+          <Card.Text>Nombre:</Card.Text>
+          <Card.Title>{project.nombre}</Card.Title>
+          <Card.Subtitle className="mb-2 text-muted">ID:</Card.Subtitle>
+          <Card.Text>{project._id}</Card.Text>
+          <Card.Subtitle className="mb-2 text-muted">Fecha de inicio:</Card.Subtitle>
+          <Card.Text>{project.fechaInicio}</Card.Text>
+          <Card.Subtitle className="mb-2 text-muted">Fecha de finalización:</Card.Subtitle>
+          <Card.Text>{project.fechaFin}</Card.Text>
+        </Card.Body>
+      </Card>
+      </>
+    );
+}
 
 function NavScrollExample() {
     const [searchId, setSearchId] = useState('')
@@ -18,18 +39,21 @@ function NavScrollExample() {
         setSearchId(event.target.value);
     }
 
-    const handleSearch = (event) => {
-        event.preventDefault()
+    const handleSearch = async (event) => {
+        event.preventDefault();
         
-        const getProyecto = () => {
-            fetch('http://localhost:4000/api/proyecto' + searchId)
-            .then(res => res.json())
-            .then(data=>{
-                setProyecto(data)
-              })
+        try {
+          const response = await fetch(`http://localhost:4000/api/proyecto/${searchId}`);
+          if (response.ok) {
+            const data = await response.json();
+            setProyecto(data);
+          } else {
+            throw new Error('Error al buscar el proyecto por ID');
+          }
+        } catch (error) {
+          console.error('Error en la búsqueda:', error);
         }
-        getProyecto()
-    }
+      };
 
   return (
     <Router>
@@ -47,6 +71,7 @@ function NavScrollExample() {
                     <Nav.Link as={Link} to={"/Proyecto"}>Proyecto</Nav.Link>
                     <Nav.Link as={Link} to={"/Encargado"}>Encargado</Nav.Link>
                     <Nav.Link as={Link} to={"/Familia"}>Familia</Nav.Link>
+                    <Nav.Link as={Link} to={"/Actualizar"}>Actualizar</Nav.Link>
                 </Nav>
                 <Form inline onSubmit={handleSearch} className="d-flex">
                     <Form.Control
@@ -68,29 +93,17 @@ function NavScrollExample() {
                 <Route path="/Proyecto" element={<Proyecto/>}/>
                 <Route path="/Encargado" element={<Encargado/>}/>
                 <Route path="/Familia" element={<Familia/>}/>
+                <Route path="/Actualizar" element={<Actualizar/>}/>
             </Routes>
         </div>
         <div>
-            {
-                proyecto.map((item, index) => (
-                <Card className='mt-4' key={index} style={{ width: '18rem' }}>
-                    <Card.Body>
-                    <Card.Text>Nombre:</Card.Text>
-                    <Card.Title>{item.nombre}</Card.Title>
-                    <Card.Subtitle className="mb-2 text-muted">ID:</Card.Subtitle>
-                    <Card.Text>{item._id}</Card.Text>
-                    <Card.Subtitle className="mb-2 text-muted">Fecha de inicio</Card.Subtitle>
-                    <Card.Text>{item.fechaInicio}</Card.Text>
-                    <Card.Subtitle className="mb-2 text-muted">Fecha de finalización</Card.Subtitle>
-                    <Card.Text>{item.fechaFin}</Card.Text>
-                    <Card.Subtitle className="mb-2 text-muted">Encargado</Card.Subtitle>
-                    <Card.Text>{item.encargado}</Card.Text>
-                    <Card.Subtitle className="mb-2 text-muted">Familia</Card.Subtitle>
-                    <Card.Text>{item.familia}</Card.Text>
-                    </Card.Body>
-                </Card>
-                ))
-            }
+        <Container>
+        {proyecto ? (
+          <ProjectCard project={proyecto} />
+        ) : (
+          <p>No se encontró ningún proyecto</p>
+        )}
+      </Container>
         </div>
     </Router>
   );

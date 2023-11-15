@@ -1,10 +1,8 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import Card from 'react-bootstrap/Card';
 
 export default function FamiliaNueva () {
-  const [familia, setFamilia] = useState([])
   const [id, setId] = useState('')
 
   const handleInputChange = (event) => {
@@ -43,19 +41,6 @@ export default function FamiliaNueva () {
       .catch(err => console.log(err))
   }
 
-    //OBTENER FAMILIA
-    useEffect(() => {
-        const getFamilia = () => {
-            fetch('http://localhost:4000/api/' + id +'/familia')
-            .then(res => res.json())
-            .then(data=>{
-                setFamilia(data)
-              })
-        }
-        getFamilia()
-    
-      },[])
-
   return (
     <>
     <h1>Nueva familia</h1>
@@ -84,23 +69,6 @@ export default function FamiliaNueva () {
             </div>
           </Form>
       }
-        <div className='mb-3'></div>
-      <div>
-        {
-            familia.map((item, index) => (
-            <Card className='mt-4' key={index} style={{ width: '18rem' }}>
-                <Card.Body>
-                <Card.Subtitle className="mb-2 text-muted">Dirección:</Card.Subtitle>
-                <Card.Text>{item.direccion}</Card.Text>
-                <Card.Subtitle className="mb-2 text-muted">Ingreso:</Card.Subtitle>
-                <Card.Text>{item.ingreso}</Card.Text>
-                <Card.Subtitle className="mb-2 text-muted">Proyecto:</Card.Subtitle>
-                <Card.Text>{item.proyecto}</Card.Text>
-                </Card.Body>
-            </Card>
-            ))
-        }
-      </div>
     </>
   )
 }

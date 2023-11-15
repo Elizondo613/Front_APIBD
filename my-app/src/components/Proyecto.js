@@ -18,6 +18,10 @@ export default function ProyectoNuevo () {
     navigate('/Familia');
   }
 
+  const handleClickA = () => {
+    navigate('/Actualizar')
+  }
+
   const formRef = useRef(null)
 
   const handleSubmit = (event) => {
@@ -101,8 +105,11 @@ export default function ProyectoNuevo () {
               </Form.Group>
             </div>
             <div className='row justify-content-center mt-3'>
-              <Button variant="success" className='col-3' type="submit">
+              <Button variant="success" className='col-3' type="submit" style={{marginRight: '20px'}}>
                 Registrar
+              </Button>
+              <Button variant="warning" className='col-3' onClick={handleClickA}>
+                Actualizar
               </Button>
             </div>
           </Form>
@@ -110,19 +117,19 @@ export default function ProyectoNuevo () {
       <div className='row'>
             {
                 proyecto.map((item, index) => (
-                    <Card className='mt-4' key={index} style={{ width: '18rem' }}>
+                    <Card className='mt-4' key={index} style={{ width: '18rem', marginRight: '20px' }}>
                     <Card.Body>
                     <Card.Text>Nombre:</Card.Text>
                     <Card.Title>{item.nombre}</Card.Title>
                     <Card.Subtitle className="mb-2 text-muted">ID:</Card.Subtitle>
                     <Card.Text>{item._id}</Card.Text>
-                    <Card.Subtitle className="mb-2 text-muted">Fecha de inicio</Card.Subtitle>
+                    <Card.Subtitle className="mb-2 text-muted">Fecha de inicio:</Card.Subtitle>
                     <Card.Text>{item.fechaInicio}</Card.Text>
-                    <Card.Subtitle className="mb-2 text-muted">Fecha de finalización</Card.Subtitle>
+                    <Card.Subtitle className="mb-2 text-muted">Fecha de finalización:</Card.Subtitle>
                     <Card.Text>{item.fechaFin}</Card.Text>
-                    <Card.Subtitle className="mb-2 text-muted">Encargado</Card.Subtitle>
+                    <Card.Subtitle className="mb-2 text-muted">Encargado:</Card.Subtitle>
                     <Card.Text>{item.encargado}</Card.Text>
-                    <Card.Subtitle className="mb-2 text-muted">Familia</Card.Subtitle>
+                    <Card.Subtitle className="mb-2 text-muted">Familia:</Card.Subtitle>
                     <Card.Text>{item.familia}</Card.Text>
                     <button onClick={handleClick} className='btn btn-primary'>Añadir encargado</button>
                     <div>{" "}</div>
