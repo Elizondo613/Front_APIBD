@@ -1,10 +1,18 @@
 import React from 'react';
-import Navbar from './components/Navbar';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import MainPage from './components/MainPage';
+import ProveedorPage from './components/ProveedorPage';
 
-function App() {
+const App = () => {
   return (
-    <Navbar/>
+    <Router>
+      <Routes>
+        <Route exact path="/" element={<MainPage />} />
+        <Route path="/proveedor" element={<ProveedorPage />} />
+      </Routes>
+    </Router>
   );
-}
+};
 
 export default App;
+

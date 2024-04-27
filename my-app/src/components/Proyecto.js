@@ -4,154 +4,184 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Card from 'react-bootstrap/Card';
 
-export default function ProyectoNuevo () {
-  const [proyecto, setProyecto] = useState([])
-  const [inUpdated, setInUpdated] = useState(false)
+export default function ProveedorNuevo() {
+  const [proveedor, setProveedor] = useState([]);
+  const [inUpdated, setInUpdated] = useState(false);
+  const [selectedProveedor, setSelectedProveedor] = useState(null);
 
   const navigate = useNavigate();
 
-  const handleClick = () => {
-    navigate('/Encargado');
-  };
-
-  const handleClickF = () => {
-    navigate('/Familia');
-  }
-
-  const handleClickA = () => {
-    navigate('/Actualizar')
-  }
-
-  const formRef = useRef(null)
+  const formRef = useRef(null);
 
   const handleSubmit = (event) => {
-    event.preventDefault()
+    event.preventDefault();
 
-    let tmpProyecto = {
+    let tmpProveedor = {
       nombre: event.target.inputNombre.value,
-      fechaInicio: event.target.inputFechaInicio.value,
-      fechaFin: event.target.inputFechaFin.value,
-      presupuesto: event.target.inputPresupuesto.value,
-      encargado: event.target.inputEncargado.value,
-      familia: event.target.inputFamilia.value
+      apellido: event.target.inputApellido.value,
+      codigo: event.target.inputCodigo.value,
+      nit: event.target.inputNit.value,
+      departamento: event.target.inputDepartamento.value,
+      municipio: event.target.inputMunicipio.value,
+      correo: event.target.inputCorreo.value,
+      telefono: event.target.inputTelefono.value,
+    };
+
+    if (selectedProveedor) {
+      // Si hay un proveedor seleccionado, actualiza
+      updateProveedor(selectedProveedor._id, tmpProveedor);
+    } else {
+      // Si no, crea un nuevo proveedor
+      newProyectAPI(tmpProveedor);
     }
-    
-    newProyectAPI(tmpProyecto)
 
-    formRef.current.reset()
-  }
+    formRef.current.reset();
+  };
 
-  //INGRESAR NUEVO PROYECTO
-  const newProyectAPI = (proyecto) => {
-
-    fetch("http://localhost:4000/api/proyecto", {
+  const newProyectAPI = (proveedor) => {
+    fetch('http://localhost:4000/proveedor/proveedores', {
       method: 'POST',
       headers: {
-        'Content-type': 'application/json'
+        'Content-type': 'application/json',
       },
-      body: JSON.stringify(proyecto)
+      body: JSON.stringify(proveedor),
     })
-      .then(response => response.json())
-      .then(data => {
-        console.log(data)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        setInUpdated(true);
       })
-      .catch(err => console.log(err))
-  }
+      .catch((err) => console.log(err));
+  };
 
-  //BORRAR PROYECTO
-  const handleDelete = _id => {
+  const updateProveedor = (_id, updatedData) => {
+    fetch(`http://localhost:4000/proveedor/proveedores/${_id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updatedData),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        setInUpdated(true);
+        setSelectedProveedor(null); // Después de la actualización, deselecciona el proveedor
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const handleDelete = (_id) => {
     const requestInit = {
-        method: 'DELETE'
-    }
-    fetch('http://localhost:4000/api/proyecto/' + _id, requestInit)
-    .then(res => res.text()) 
-    .then(res => console.log(res))
+      method: 'DELETE',
+    };
+    fetch('http://localhost:4000/proveedor/proveedores/' + _id, requestInit)
+      .then((res) => res.text())
+      .then((res) => console.log(res));
 
-    setInUpdated(true)
-  }
+    setInUpdated(true);
+  };
 
-  //OBTENER PROYECTOS
   useEffect(() => {
-    const getProyecto = () => {
-        fetch('http://localhost:4000/api/proyecto')
-        .then(res => res.json())
-        .then(data=>{
-            setProyecto(data)
-          })
-    }
-    getProyecto()
+    const getProveedor = () => {
+      fetch('http://localhost:4000/proveedor/proveedores')
+        .then((res) => res.json())
+        .then((data) => {
+          setProveedor(data);
+        });
+    };
+    getProveedor();
+  }, []);
 
-  },[])
+  // Función para cargar los datos del proveedor seleccionado en el formulario
+  const handleEdit = (selectedProveedor) => {
+    setSelectedProveedor(selectedProveedor);
+    formRef.current.reset();
+    // Llena los campos del formulario con los datos del proveedor seleccionado
+    formRef.current.inputNombre.value = selectedProveedor.nombre;
+    formRef.current.inputApellido.value = selectedProveedor.apellido;
+    formRef.current.inputCodigo.value = selectedProveedor.codigo;
+    formRef.current.inputNit.value = selectedProveedor.nit;
+    formRef.current.inputDepartamento.value = selectedProveedor.departamento;
+    formRef.current.inputMunicipio.value = selectedProveedor.municipio;
+    formRef.current.inputCorreo.value = selectedProveedor.correo;
+    formRef.current.inputTelefono.value = selectedProveedor.telefono;
+  };
 
   return (
     <>
-    <h1>Proyecto nuevo</h1>
-      {
-          <Form onSubmit={handleSubmit} ref={formRef}>
-            <div className='row'>
-              <Form.Group className="mb-3 col-6" controlId="inputNombre">
-                <Form.Label>Nombre</Form.Label>
-                <Form.Control type="text" placeholder="Nombre..." />
+      <h1>Proveedor nuevo</h1>
+      <Form onSubmit={handleSubmit} ref={formRef}>
+        <div className='row'>
+          <Form.Group className='mb-3 col-6' controlId='inputNombre'>
+            <Form.Label>Nombre</Form.Label>
+            <Form.Control type='text' placeholder='Nombre...' />
+          </Form.Group>
+          <Form.Group className="mb-3 col-6" controlId="inputApellido">
+                <Form.Label>Apellido</Form.Label>
+                <Form.Control type="text" placeholder="apellido..." />
               </Form.Group>
-              <Form.Group className="mb-3 col-6" controlId="inputFechaInicio">
-                <Form.Label>Fecha de inicio</Form.Label>
-                <Form.Control type="text" placeholder="fecha inicio..." />
+              <Form.Group className="mb-3 col-6" controlId="inputCodigo">
+                <Form.Label>Código</Form.Label>
+                <Form.Control type="number" placeholder="codigo..." />
               </Form.Group>
-              <Form.Group className="mb-3 col-6" controlId="inputFechaFin">
-                <Form.Label>Fecha de finalización</Form.Label>
-                <Form.Control type="text" placeholder="fecha fin..." />
+              <Form.Group className="mb-3 col-6" controlId="inputNit">
+                <Form.Label>NIT</Form.Label>
+                <Form.Control type="number" placeholder="nit..." />
               </Form.Group>
-              <Form.Group className="mb-3 col-6" controlId="inputPresupuesto">
-                <Form.Label>Presupuesto</Form.Label>
-                <Form.Control type="number" placeholder="presupuesto..." />
+              <Form.Group className="mb-3 col-6" controlId="inputDepartamento">
+                <Form.Label>Departamento</Form.Label>
+                <Form.Control type="text" placeholder="Departamento..." />
               </Form.Group>
-              <Form.Group className="mb-3 col-6" controlId="inputEncargado">
-                <Form.Label>Encargado</Form.Label>
-                <Form.Control type="text" placeholder="Encargado..." />
+              <Form.Group className="mb-3 col-6" controlId="inputMunicipio">
+                <Form.Label>Municipio</Form.Label>
+                <Form.Control type="text" placeholder="Municipio..." />
               </Form.Group>
-              <Form.Group className="mb-3 col-6" controlId="inputFamilia">
-                <Form.Label>Familia</Form.Label>
-                <Form.Control type="text" placeholder="Familia..." />
+              <Form.Group className="mb-3 col-6" controlId="inputCorreo">
+                <Form.Label>Correo</Form.Label>
+                <Form.Control type="text" placeholder="Correo..." />
               </Form.Group>
-            </div>
-            <div className='row justify-content-center mt-3'>
-              <Button variant="success" className='col-3' type="submit" style={{marginRight: '20px'}}>
-                Registrar
-              </Button>
-              <Button variant="warning" className='col-3' onClick={handleClickA}>
-                Actualizar
-              </Button>
-            </div>
-          </Form>
-      }
+              <Form.Group className="mb-3 col-6" controlId="inputTelefono">
+                <Form.Label>Teléfono</Form.Label>
+                <Form.Control type="number" placeholder="Teléfono..." />
+              </Form.Group>
+        </div>
+        <div className='row justify-content-center mt-3'>
+          <Button variant='success' className='col-3' type='submit' style={{ marginRight: '20px' }}>
+            {selectedProveedor ? 'Actualizar' : 'Registrar'}
+          </Button>
+        </div>
+      </Form>
       <div className='row'>
-            {
-                proyecto.map((item, index) => (
-                    <Card className='mt-4' key={index} style={{ width: '18rem', marginRight: '20px' }}>
-                    <Card.Body>
-                    <Card.Text>Nombre:</Card.Text>
-                    <Card.Title>{item.nombre}</Card.Title>
-                    <Card.Subtitle className="mb-2 text-muted">ID:</Card.Subtitle>
-                    <Card.Text>{item._id}</Card.Text>
-                    <Card.Subtitle className="mb-2 text-muted">Fecha de inicio:</Card.Subtitle>
-                    <Card.Text>{item.fechaInicio}</Card.Text>
-                    <Card.Subtitle className="mb-2 text-muted">Fecha de finalización:</Card.Subtitle>
-                    <Card.Text>{item.fechaFin}</Card.Text>
-                    <Card.Subtitle className="mb-2 text-muted">Encargado:</Card.Subtitle>
-                    <Card.Text>{item.encargado}</Card.Text>
-                    <Card.Subtitle className="mb-2 text-muted">Familia:</Card.Subtitle>
-                    <Card.Text>{item.familia}</Card.Text>
-                    <button onClick={handleClick} className='btn btn-primary'>Añadir encargado</button>
-                    <div>{" "}</div>
-                    <button onClick={handleClickF} className='mt-3 btn btn-primary'>Añadir familia</button>
-                    <div>{" "}</div>
-                    <button onClick={() => handleDelete(item._id)} setInUpdated={setInUpdated} className='mt-3 btn btn-danger'>Eliminar</button>
-                    </Card.Body>
-                </Card>
-                ))
-            }
+        {proveedor.map((item, index) => (
+          <Card className='mt-4' key={index} style={{ width: '18rem', marginRight: '20px' }}>
+            <Card.Body>
+              <Card.Text>Nombre:</Card.Text>
+              <Card.Title>{item.nombre}</Card.Title>
+              <Card.Subtitle className="mb-2 text-muted">ID:</Card.Subtitle>
+                  <Card.Title>{item.apellido}</Card.Title>
+                  <Card.Subtitle className="mb-2 text-muted">Apellido:</Card.Subtitle>
+                  <Card.Text>{item._id}</Card.Text>
+                  <Card.Subtitle className="mb-2 text-muted">Nit:</Card.Subtitle>
+                  <Card.Text>{item.nit}</Card.Text>
+                  <Card.Subtitle className="mb-2 text-muted">Departamento:</Card.Subtitle>
+                  <Card.Text>{item.departamento}</Card.Text>
+                  <Card.Subtitle className="mb-2 text-muted">Municipio:</Card.Subtitle>
+                  <Card.Text>{item.municipio}</Card.Text>
+                  <Card.Subtitle className="mb-2 text-muted">Correo:</Card.Subtitle>
+                  <Card.Text>{item.correo}</Card.Text>
+                  <Card.Subtitle className="mb-2 text-muted">Teléfono:</Card.Subtitle>
+                  <Card.Text>{item.telefono}</Card.Text>
+              <button onClick={() => handleEdit(item)} className='mt-3 btn btn-primary'>
+                Editar
+              </button>
+              <button onClick={() => handleDelete(item._id)} className='mt-3 btn btn-danger'>
+                Eliminar
+              </button>
+            </Card.Body>
+          </Card>
+        ))}
       </div>
     </>
-
-  )
+  );
 }

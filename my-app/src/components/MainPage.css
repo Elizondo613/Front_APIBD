@@ -1,0 +1,29 @@
+.flex-column {
+    flex-direction: column !important;
+  }
+  
+  .navbar {
+    width: 150px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0; 
+    z-index: 1000; 
+    overflow-y: auto; 
+  }
+  
+  .nav-link {
+    margin-top: 80px; 
+  }
+
+  .top-bar {
+    background-color: rgb(45, 45, 197); 
+    height: 50px;
+    width: 100%; 
+  }
+
+  .bottle {
+    position: absolute;
+    width: 100px;
+    height: auto;
+  }
